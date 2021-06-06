@@ -3,7 +3,7 @@ title: What kind of high-speed systems require tens of Gigabytes/s amount of thr
 date: 2021-06-06T15:37:32-04:00
 ---
 
-What kind of high-speed systems require tens of Gigabytes/s amount of throughput? 10 GB is a lot of data. For context, the bandwidth of a dslr operating at a relatively high-throughput video-mode of 1080p resolution, 12 bit depth, at 30 fps is around 0.093 GB/s. Which is an order of magnitude less than 10 GB/s
+What kind of high-speed systems require tens of Gigabytes/s amount of throughput? 10 GB is a lot of data. For context, the bandwidth of a dslr operating at a relatively high-throughput video-mode of 1080p resolution, 12 bit depth, at 30 fps is around 0.093 GB/s. Which is two orders of magnitude less than 10 GB/s
 
 Example 1: A camera array with 54 13 Megapixel sensors recording at 15 fps produces 10 GB/s. 1 pcie interface can handle this amount of data flow.
 
