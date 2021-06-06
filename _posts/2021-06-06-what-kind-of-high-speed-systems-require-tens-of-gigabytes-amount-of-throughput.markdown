@@ -3,9 +3,9 @@ title: What kind of high-speed systems require tens of Gigabytes/s amount of thr
 date: 2021-06-06T15:37:32-04:00
 ---
 
-What kind of high-speed systems require tens of Gigabytes/s amount of throughput? 10 GB is a lot of data. For context, the bandwidth of a dslr operating at a relatively high-throughput video-mode of 1080p resolution, 12 bit depth, at 30 fps is around 0.093 GB/s. Which is two orders of magnitude less than 10 GB/s
+What kind of high-speed systems require tens of Gigabytes/s amount of throughput? 10 GB is a lot of data. For context, the bandwidth of a dslr operating at a relatively high-throughput video-mode of 1080p resolution, 12 bit depth, at 30 fps is around 0.093 GB/s. Which is two orders of magnitude less than 10 GB/s.
 
-Example 1: A camera array with 54 13 Megapixel sensors recording at 15 fps produces 10 GB/s. 1 pcie interface can handle this amount of data flow.
+Example 1: A camera array with 54 13 Megapixel sensors recording at 15 fps produces 10 GB/s. 1 pcie 3.0 x8 interface can handle this amount of data flow.
 
 Example 2: A DMD-camera pair that requires 800 patterns per second (where one pattern is active for 45 us).
 
@@ -14,7 +14,7 @@ The camera just integrates all this in one time so the data throughput is not to
 High-speed is needed in the DMD projections.For a binary pattern, 2.8 Megapixels (Megabit), the throughput per second for 28fps is:
 
 - 800 patterns: 28 frames/s * 2.8 Megabits/pattern * 800 patterns/frame = 62720 E6 = 62Gbps = 7.75 GBps !!
-- 100 patterns: 7840 E6 = 7.8Gbps = 0.975 GBps
+- 100 patterns: 7840 E6 = 7.8 Gbps = 0.975 GBps
 
 The 2.8MP comes from the size of an [example sensor](https://thinklucid.com/product/atlas-2-8-mp-imx421/). This can be any number depending on the sensor size. For this example, the sensor has an active area of approximately 1900x1400px (3:4 ratio).
 
