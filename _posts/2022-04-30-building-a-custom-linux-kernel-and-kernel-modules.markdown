@@ -70,7 +70,7 @@ The work around: Instead of putting the `MY_MODULE` stanza in kconfig, I defined
 ```
 core-$(CONFIG_MY_MODULE)+=my_module.o
 ```
-in the Makefile. Defining `CONFIG_MY_MODULE` in `core.h` and `metrics.h` ensures that from the point of that code, the option is always enabled. (Note: This is not a solution and I’m working on resolving the core issue).
+in the Makefile. Defining `CONFIG_MY_MODULE` in `core.h` ensures that from the point of that code, the option is always enabled. (Note: This is not a solution and I’m working on resolving the core issue).
 
 If your custom module is reliant on other drivers in the kernel, you need to build the kernel with the relevant drivers compiled in before your driver can be compiled.
 It compiles in alphabetical order so, for example, when “a” is done, that means all the “ath” modules are compiled.
@@ -97,7 +97,7 @@ insmod ~/your_module.ko
 dmesg | tail
 ```
 
-This was a brief overview of the Linux kernel's elaborate build system. There is more to be explored -- specifically, an example Makefile would be useful. I'll try to bring in some specific kernel module examples in future blog posts. 
+This was a brief overview of the Linux kernel's elaborate build system. There is more to be explored -- specifically, an example Makefile would be useful. I'll try to bring in some specific kernel module examples in future blog posts.
 
 ## References
 [1] [kerel documentation on kbuild](https://www.kernel.org/doc/html/latest/kbuild/modules.html)

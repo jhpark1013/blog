@@ -31,6 +31,7 @@ baseurl: "/blog" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: jaeheejp
 github_username:  jhpark1013
+mathjax:            true  # enables support for mathjax - set to 'false' to disable
 
 # Build settings
 markdown: kramdown
