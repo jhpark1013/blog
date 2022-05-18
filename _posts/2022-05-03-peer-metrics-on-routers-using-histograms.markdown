@@ -2,11 +2,10 @@
 title: Real-time metrics using histograms
 date: 2022-05-03T14:31:57-04:00
 ---
-
-The math behind it is applicable for any applications that require low latency statistical analysis of incoming streams of data in real time.
+Wouldn't it be cool to accurately analyze trillions of data points without taking up hundreds of terabytes of storage? Say for instance, you wanted to quantify real time query latencies within a specified error-bound? This is actually possible and I wanted to write a bit about the underlying principles. There are a few papers (see references at the end of the blog post) by Datadog [^1] and Gil Tene [^2] that describe this in more detail. Although I had been thinking about applying this for analyzing performance metrics on routers, the math behind it is applicable for any applications that require low latency statistical analysis of incoming streams of data in real time.
 
 ## 1. Benefits of relative-error histograms
-Traditional metrics are counter (aggregate by sum) or gauge (aggregate by last value or average) which are not accurate. We want to be able to answer questions not just about the average or max latency, but we want to know for instance the 99th percentile latency. There are several algorithms that are based on percentile aggregations. To name a few: DDsketch (Datadog), HDR histogram (Gil Tene), OpenHistogram (Circonus).
+Traditional metrics are counter (aggregate by sum) or gauge (aggregate by last value or average) which are not accurate. We want to be able to answer questions not just about the average or max latency, but we want to know, for instance, the 99th percentile latency. There are several algorithms that are based on percentile aggregations. To name a few: DDsketch (Datadog), HDR histogram (Gil Tene), OpenHistogram (Circonus).
 
 The key things to keep in mind are:
 1. accuracy
@@ -153,7 +152,7 @@ def _clz(self, value):
 A C implementation below..
 Mask is defined and the bucket index is found by subtracting the unit_magnitude and sub_bucket_half_count_magnitude.
 ```c
-static void record_histogram_entry(structhistogram *h, u32 v)
+static void record_histogram_entry(struct histogram *h, u32 v)
 {
 	int mask = (h->header.subbin_count-1) << h->header.unit_magnitude;
 	int bkt_idx = v == 0 ? 0 : fls(v | mask) -
@@ -168,5 +167,5 @@ static void record_histogram_entry(structhistogram *h, u32 v)
 
 
 ## References
-[1] [Datadog](http://www.vldb.org/pvldb/vol12/p2195-masson.pdf)
-[2] [HDRhistogram](http://hdrhistogram.org/)
+[^1]: [Datadog](http://www.vldb.org/pvldb/vol12/p2195-masson.pdf)
+[^2]: [HDRhistogram](http://hdrhistogram.org/)
