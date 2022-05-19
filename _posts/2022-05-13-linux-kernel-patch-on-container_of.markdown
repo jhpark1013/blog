@@ -7,7 +7,7 @@ Yesterday my patch got placed in the Linux kernel's wireless-next tree, so I tho
 ## Prologue
 I was reading the wfx codebase (which is a driver for Silicon Lab's wf200 wifi transceiver integrated circuit chip) and saw a lot of `container_of()` structure which I hadn't seen before. It's a structure that is specific to the Linux kernel and has several benefits. I saw a "fixme" comment in the code that says that the `container_of()` structure is preferred and wanted to tackle it!
 
-I got a lot of help from Stefano Brivio who was mentoring the Linux kernel outreachy contributors this year. The diagram and explanation below was created by Stefano as he was explaining the `container_of()` construct.
+I got a lot of help from Stefano Brivio who was mentoring the Linux kernel Outreachy contributors this year. The diagram and explanation below was created by Stefano as he was explaining the `container_of()` construct.
 
 ## Virtual interface storage in wfx code
 In the `wfx_add_interface()` function, when a virtual interface is created, a reference to it is stored in the private data for later usage.
@@ -48,7 +48,7 @@ $ pahole drivers/staging/wfx/wfx.o | grep -A50 "^struct ieee80211_vif " | grep d
 u8 drv_priv[] __attribute__((__aligned__(8))); /*   888     0 */
 ```
 
-so, by subtracting "3" (or, actually, 888) from the address of your `drv_priv`, you already have a pointer to `struct ieee80211_vif`.
+so, by subtracting "3" (or, actually, 888) from the address of your `drv_priv`, you already have a pointer to `struct ieee80211_vif`. (Side note: how cool is `pahole`!! :))
 
 Using `container_of()` in this case will make the execution of the code faster, too. In the current version with the pointer, the CPU will need to
 1. load what's written at that location, and then
