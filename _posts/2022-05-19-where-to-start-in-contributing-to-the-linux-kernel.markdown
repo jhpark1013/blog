@@ -22,8 +22,10 @@ The staging directory contains drivers that are in progress.
 - ["first kernel patch"](https://kernelnewbies.org/FirstKernelPatch) is a reference that I consistently referred to as I was making patches.
 - [Outreachy](https://www.outreachy.org/) is a great program that encourages people to work on open source. The Linux kernel is one of the open source communities that work with Outreachy.
 
+The mentors at Outreachy are immensely knowledgeable and extremely nice! The positive nature of the Linux kernel community, and mentors and contributors at Outreachy, is amazing. It's easy to criticize harshly at novice mistakes, but they chose not to; the constructive feedback was extremely valuable and I learned a lot. And, most people in tech will realize that everyone starts from somewhere. 
+
 ## Patch advice
-The ["patch philosophy"](https://kernelnewbies.org/PatchPhilosophy) is a good reference. 
+The ["patch philosophy"](https://kernelnewbies.org/PatchPhilosophy) is a good reference.
 Before I forget, here's a log of feedback I had received after submitting my initial kernel patches.
 
 - `difforderfile` can sequence the order the files appear in the diff.
