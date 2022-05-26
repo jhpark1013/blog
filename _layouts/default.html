@@ -8,6 +8,9 @@ published: true
 
 	<head>
 		{% include head.html %}
+		{% if jekyll.environment == 'production' and site.analytics.provider and page.analytics != false %}
+		{% include analytics.html %}
+		{% endif %}
 	</head>
 
 	<body>
