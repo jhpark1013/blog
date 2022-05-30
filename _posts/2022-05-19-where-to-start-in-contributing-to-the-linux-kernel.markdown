@@ -30,4 +30,4 @@ Before I forget, here's a log of feedback I had received after submitting my ini
 - Have a concise subject line. The log message should give a more complete description.
 - Instead of repeating what the checkpatch tells you, explain the reasoning behind the fix in your case.
 
-I'll come back to updating this log.
+I'll come back to updating this log!
