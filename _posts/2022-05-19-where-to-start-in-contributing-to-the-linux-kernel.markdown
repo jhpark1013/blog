@@ -3,8 +3,6 @@ title: Where to start in contributing to the Linux kernel
 date: 2022-05-19T11:22:51-04:00
 ---
 
-This is a work-in-progress. I will update this post soon!
-
 ## Where does Linux kernel development even happen?
 Initially when I started to read the Linux kernel code, I was confused about where the development happened. I had thought it was on GitHub and that the directories like staging are submodules.
 It turns out that kernel development does not happen on Github. We see some repositories on GitHub because they are provided as mirrors of the original repositories.
@@ -22,7 +20,7 @@ The staging directory contains drivers that are in progress.
 - ["first kernel patch"](https://kernelnewbies.org/FirstKernelPatch) is a reference that I consistently referred to as I was making patches.
 - [Outreachy](https://www.outreachy.org/) is a great program that encourages people to work on open source. The Linux kernel is one of the open source communities that work with Outreachy.
 
-The mentors at Outreachy are immensely knowledgeable and extremely nice! The positive nature of the Linux kernel community, and mentors and contributors at Outreachy, is amazing. It's easy to criticize harshly at novice mistakes, but they chose not to; the constructive feedback was extremely valuable and I learned a lot. And, most people in tech will realize that everyone starts from somewhere. 
+The mentors at Outreachy are immensely knowledgeable and extremely nice! The positive nature of the Linux kernel community, and mentors and contributors at Outreachy, is amazing. It's easy to criticize harshly at novice mistakes, but they chose not to; the constructive feedback was extremely valuable and I learned a lot. And, most people in tech will realize that everyone starts from somewhere.
 
 ## Patch advice
 The ["patch philosophy"](https://kernelnewbies.org/PatchPhilosophy) is a good reference.

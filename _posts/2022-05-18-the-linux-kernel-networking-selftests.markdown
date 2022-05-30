@@ -3,8 +3,6 @@ title: The Linux kernel networking selftests
 date: 2022-05-18T13:59:20-04:00
 ---
 
-This is a work-in-progress. I will update this post soon!
-
 I had an opportunity to write a [patch](https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=a313f858ed36) to improve the functionality of one of the tests their selftests. I got a lot of help from Roopa Prabhu who was mentoring the Linux kernel Outreachy contributors this year. This patch, although simple, helped me get comfortable with the net-dev tree and the available selftests. It was very interesting to look at the tests and the network topologies defined in them, and I wanted to give a brief overview of the system and write about potential future improvements.
 
 ## Selftests and network topologies
