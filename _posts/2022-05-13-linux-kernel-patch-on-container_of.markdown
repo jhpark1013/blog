@@ -79,7 +79,7 @@ To reiterate, we are implementing `container_of()` to get `vif`. `container_of()
 1. execution of getting `vif` is faster.
 2. we don't have to define multiple pointers by setting it in the code.
 
-The code before got a pointer to `drv_priv`, then pointed back to the generic interface data (`wfx->vif = vif`). So, another pointer is defined by `vif` in `struct wfx_vif` to point to the `struct ieee80211_vif` interface. After implementing `container_of()`, we don't have to define another pointer; the compiler already has the pointer to `struct ieee80211_vif` via offset of `drv_priv`! So all it needs to do is subtract the offset and you have the pointer.
+Previously, the code got a pointer to `drv_priv`, then pointed back to the generic interface data (`wfx->vif = vif`). So, another pointer is defined by `vif` in `struct wfx_vif` to point to the `struct ieee80211_vif` interface. After implementing `container_of()`, we don't have to define another pointer; the compiler already has the pointer to `struct ieee80211_vif` via offset of `drv_priv`! So all it needs to do is subtract the offset and you have the pointer.
 
 Since we're not storing a reference of the virtual interface anymore, that member was removed. And all references to that member was replaced with the newly defined container_of construct.
 
