@@ -14,18 +14,18 @@ Running commands within a network namespace goes like this:
 ```
 sudo ip netns exec ns1 <command>
 ```
-
 If I run `bash` as the command, and run `nc -l 8900` in the namespace, `netstat` shows that the server exists.
-
 ```
+$ sudo ip netns exec ns1 bash
+
 root@jaehee:/home/jaehee# netstat -tulpn
 Active Internet connections (only servers)
 Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
 tcp        0      0 0.0.0.0:8900            0.0.0.0:*               LISTEN
 ```
-
 It's listening on `0.0.0.0:8900` which means it's listening all network interfaces. But since I haven't set up any interfaces yet, when I `curl`, no packets would be detected. And that is inline with what I see:
 ```
+root@jaehee:/home/jaehee# curl localhost:8900
 curl: (7) Couldn't connect to server
 ```
 But if I setup a loopback `lo` interface, `curl` should send packets this time. and `nc` should receive them.   
@@ -47,8 +47,15 @@ So, when we add a network interface, the server starts on `0.0.0.0`.
 
 
 ## Routing
-Next, I'd like to understand how a packet is routed. We have interfaces/devices that want to send data to eachother. And there are paths or routes connecting these interfaces where traffic flows. The packets of data are assigned a network device. And there are iptable rules. iptables lets you create rules to match network packets and accept/drop/modify them. It's used for firewalls and NAT. Every iptable rule has a target (what to do with the matching packets). You can accept, drop or return packets.
+We have interfaces/devices that want to send data to eachother. And there are paths or routes connecting these interfaces where traffic flows. The packets of data are assigned a network device.
 
+**Step 1** iptables has prerouting rules
+
+iptables lets you create rules to match network packets and accept/drop/modify them. It's used for firewalls and NAT. Every iptable rule has a target (what to do with the matching packets. e.g. accept/drop/modify). The iptables have chains, and chains have rules. There are tables for filter, nat, etc. The chains in the table has input, forward, prerouting options. And the rules are what looks like `-s 172.17.0.0 -j DROP`
+
+**Step 2** The packets get routed
+
+You can see the routes on the route table.
 On my computer, I have a few interfaces. When I run `ifconfig` I can see a list of my interfaces. I have `docker`, `lo`, `enp`, `wlp`, `wg`, `virbr`, etc. And if I run `sudo ip route list table all` I can see my routes.
 ```
 $ sudo ip route list table all
@@ -68,10 +75,14 @@ local 172.17.0.1 dev docker0 table local proto kernel scope host src 172.17.0.1
 ```
 On the last line it says `local` in the front, so the packets sent to `172.17.0.1` goes to `local`.
 
+**Step 3** tcpdump gets the packet
+
 Once there is a network interface associated with the packet, the packet gets sent there and we can observe that the packet gets sent with tcpdump.
 
 ## Summary
-For the packets to go through the Linux kernel network stack, you need network interfaces. Once routed thorugh an interface, you can use tcpdump to capture packets. When you send a packet to an IP address, the route table decides which network interface the packet goes through.
+Before routing, there is a prerouting chain in the iptables that happens.
+When you send a packet to an IP address, the route table decides which network interface the packet goes through.
+For the packets to go through the Linux kernel network stack, you need network interfaces. Once routed thorugh an interface, you can use tcpdump to capture packets.
 
 <!--
 ```
