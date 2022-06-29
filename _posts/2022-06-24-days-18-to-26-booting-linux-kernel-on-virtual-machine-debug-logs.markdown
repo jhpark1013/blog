@@ -1,5 +1,5 @@
 ---
-title: Days 18 to 26 - [WIP] booting custom Linux kernel on virtual machine (debug logs)
+title: Days 18 to 26 - booting custom Linux kernel on virtual machine (debug logs)
 date: 2022-06-24T14:42:14-04:00
 ---
 
@@ -14,6 +14,8 @@ mbuto -p kselftest -C timens works though
 3. create a deb-pkg -- this failed to make .deb files (I was planning to scp it over)
 
 4. haven't tried building it on the vm because the storage. (I had run out of storage on my image when I tried building it) I've increased the image but it wasn't enough. So I need to try increasing it more and build it again (haven't had the chance to this yet)
+
+Note: I've gotten method 4 to work now. Methods 1-2 are still unsolved. This post is mostly to document my WIP debug process for method 1.  
 
 Ideally I'd like to work with mbuto or boot from qemu. Like, I'd like this command to work
 ```
@@ -91,7 +93,7 @@ I also got a kernel panic error "vfs" not finding the rootfs and asking me to su
 [    2.134347] ---[ end Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0-
 ```
 
-Getting rid of qemu, then reinstalling it worked only for initrd=initramfs (this meant deleting the debian install, which I think was causing the issue.. or maybe it was the additional inputs to the kvm like `-cpu host` etc)
+Reinstalling qemu worked only for initrd=initramfs where initramfs was made with `mkinitramfs`. I deleted the debian install on qemu in the process, which I think was causing problems.. or maybe it was the additional inputs to the kvm like `-cpu host` etc)
 
 I tried a using busybox, and understood the init script in initrd, but -- none of it really mattered because, now, mbuto successfully created my initrd.
 
@@ -134,10 +136,17 @@ modprobe: FATAL: Module nft_chain_nat not found in directory /lib/modules/5.18.0
 
 **6/24** - I thought forgot `make modules_install` afterwards. But mbuto does this for me. I still get "modprobe: FATAL: Module iptable_nat not found in directory /lib/modules/5.18.0-rc4+" issue still exists. But there I see iptable_nat in the net-next/.mbuto_mods/lib/modules/5.18.0-rc4+/kernel/net. I'm not sure why it's not detecting it?
 
+My current output: https://0x0.st/oSM0.txt
 
+**6/25** - I am using qemu virtual machine to test (method 4 from the very beginning of this blog). I've compiled net-next from there, `make modules_install`, `make install` and boot (select the new kernel I just built in grub). Then, use `perf` to trace kernel functions that I've edited.
+
+```
+qemu-system-x86_64 -enable-kvm -nic user,hostfwd=tcp::2222-:22 -daemonize -m 4G -smp cores=4,cpus=4 net-test
+
+```
 
 ## Thoughts
 
-`-C timens` selftests work. so this indicates that there are some dependencies specific to `net` selftests that are not working.
+The `timens` selftests work -- i.e. when I run `mbuto -p kselftests -C timens`. So this indicates that there are some dependencies specific to `net` selftests that are not working.
 
 Although it's still unsolved, incremental progress has been made and I'm learning a lot. I'm trying to get better at reading the error messages, finding where in the code it's causing errors, and identifying the source of the problems.
