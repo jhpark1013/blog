@@ -3,7 +3,7 @@ title: Days 18 to 26 - booting custom Linux kernel on virtual machine (debug log
 date: 2022-06-24T14:42:14-04:00
 ---
 
-I've created a selftest for testing the new arp_accept test. I am currently trying to boot the new kernel (with the new arp_accept knob) on my qemu debian but am a little stuck here. The qemu won't load a stable kernel build either. I'm running debian on my qemu.
+I've created a selftest for testing the new arp_accept knob. I am currently trying to boot the new kernel (with the new arp_accept knob) on my qemu debian but am a little stuck here. The qemu won't load a stable kernel build either. I'm running debian on my qemu.
 
 I've tried 4 different ways of testing on virtual machine:
 1. booting on qemu with mbuto creating my initrd: mbuto -p kselftests -C net, mbuto -p kselftests -T net:arp_accept_test.sh -- these didn't work.
