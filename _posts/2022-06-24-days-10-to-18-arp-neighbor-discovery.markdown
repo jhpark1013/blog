@@ -3,6 +3,11 @@ title: Networking concepts
 date: 2022-06-24T14:39:51-04:00
 ---
 
+In this blog, I will give a brief overview of how devices communicate with each other in networks.
+<!-- ![network](/blog/assets/network_diagrams/network_06.PNG) -->
+
+Keywords: ARP, DNS, DHCP, MAC, IP, VLAN 
+
 ## Networks
 
 Let's start with two devices that communicates with each other. The way you would do that is with a switch, which has ports that makes connections to network devices. This drawing shows two devices connected to a switch.
@@ -23,10 +28,12 @@ If you have multiple switches connected to each other (like in the drawing above
 
 Devices have MAC addresses which are physical addresses, and they also have logical addresses called IP addresses.
 
-Every device has an ARP table that has the association between IP addresses and MAC addresses. When you start your device, its ARP table is empty. It fills entries in the ARP table by sending out a broadcasted ARP request. It goes like:
-Source Device: "Who has IP address 10.1.1.11?"
-Target Device: "It's me! My MAC address is AB-13-34-...DE"
-Source Device: Updates its ARP table.
+Every device has an ARP table that has the association between IP addresses and MAC addresses. When you start your device, its ARP table is empty. It fills entries in the ARP table by sending out a broadcasted ARP request.
+
+It goes like:
+1. Source Device: "Who has IP address 10.1.1.11?"
+2. Target Device: "It's me! My MAC address is AB-13-34-...DE"
+3. Source Device: Updates its ARP table.
 
 We don't want to assign an IP address statically. This is why we have DHCP servers (Dynamic Host Configuration Protocols) that assigns IP addresses to your devices dynamically. So when your device joins a network at first, it broadcasts a DHCP request, and asks for an IP address. The DHCP offers an IP address that's not already claimed and sends this address to you. Then you can acknowledge that you have accepted the IP address. There is a lease time for each IP address to keep track of which addresses are still actively being use.
 
@@ -38,7 +45,7 @@ When device joins at first:
 3. Device -> DNS: My hostname is client1, my IP address is 10.1.1.10
 4. DNS: stores that info
 
-Device updates ARP table:
+Device asks DNS for client 1's IP, communicates with client 1, and updates ARP table:
 1. Device -> DNS: "Who is client1?"
 2. DNS -> Device: "This is the IP address of client1"
 3. Device broadcasts: "Who has this IP?"

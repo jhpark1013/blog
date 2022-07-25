@@ -30,5 +30,7 @@ Before I forget, here's a log of feedback I had received after submitting my ini
 - Have a concise subject line. The log message should give a more complete description.
 - Instead of repeating what the checkpatch tells you, explain the reasoning behind the fix in your case.
 - Run `./scripts/checkpatch.pl <mypatch.patch> --strict` before you send your patch to catch any formating errors.
+- When you accidentally send the same patch multiple times, you can reply to the mailing-list, leaving a note to ignore the duplicate patch.
+- You can use perf to test that your patch works [placeholder link]
 
-I'll come back to updating this log!
+I'll come back to updating this log periodically!

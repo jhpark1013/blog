@@ -5,7 +5,7 @@ date: 2022-06-02T10:23:07-04:00
 
 Yesterday we had a project meeting where we discussed the tasks. There are close to 12 new tasks to choose from so I'm spending some time today to think how I'll divide my time. The goal/expectation is to choose one or two to work on during the next 3 months.
 
-I'd like to try to understand how to setup the topologies and start thinking of how I would design a network topology for a specific scenario. And I see 3 tasks that will get me to understand network topologies: (1) improving security for arp during neighborhood discovery, (2) fixing VLAN bridge binding, and (3) refactoring vxlan code.
+I'd like to try to understand how to setup the topologies and start thinking of how I would design a network topology for a specific scenario. And I see 3 tasks that will get me to understand network topologies: (1) providing filters for arp during neighborhood discovery, (2) fixing VLAN bridge binding, and (3) refactoring vxlan code.
 
 A couple of terms to note:
 

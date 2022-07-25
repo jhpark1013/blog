@@ -3,7 +3,7 @@ layout: page
 title: About
 permalink: /about/
 ---
-Hi, my name is Jaehee Park. Welcome to my blog!
+Hi, my name is Jaehee Park (pronounced "Jay-hee"). Welcome to my blog!
 
 I am a software engineer who is interested in embedded systems and all kinds of state-of-the-art imaging devices.
 
