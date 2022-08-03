@@ -1,12 +1,12 @@
 ---
-title: Networking concepts
+title: Networking concepts - Intro
 date: 2022-06-24T14:39:51-04:00
 ---
 
 In this blog, I will give a brief overview of how devices communicate with each other in networks.
 <!-- ![network](/blog/assets/network_diagrams/network_06.PNG) -->
 
-Keywords: ARP, DNS, DHCP, MAC, IP, VLAN 
+Keywords: ARP, DNS, DHCP, MAC, IP, VLAN
 
 ## Networks
 

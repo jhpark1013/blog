@@ -3,9 +3,9 @@ title: Linux kernel patches - new feature in ARP & NDISC neighbor discovery - pa
 date: 2022-07-24T16:45:17-04:00
 ---
 
-In the previous blog (part 1), I talked about the new knob in `arp_accept` that creates neighbors from garp only if the source ip is in the same subnet as an address configured on the interface receiving the garp message. In this blog, I will explain the subnet-filtering feature introduced in NDISC. And in the next blog (part 3), I will go through the Linux kernel selftest that was used to test the new features.
+In the previous blog (part 1), I talked about the new knob in `arp_accept` that creates neighbors from garp only if the source ip is in the same subnet as an address configured on the interface receiving the garp message. In this blog, I will explain the new subnet-filtering feature we introduced in NDISC in [this patch](https://lore.kernel.org/netdev/56d57be31141c12e9034cfa7570f2012528ca884.1657755189.git.jhpark1013@gmail.com/). And in the next blog (part 3), I will go through the Linux kernel selftest that was used to test the new features.
 
-Here are links to [part 1](http://localhost:4000/blog/2022/07/07/arp-and-ndisc-neighbor-discovery.html) and [part 3](/blog/2022/07/24/linux-kernel-patches-new-feature-in-arp-and-ndisc-neighbor-discovery-part-3-of-3.html).
+Here are links to [part 1](/blog/2022/07/07/arp-and-ndisc-neighbor-discovery.html) and [part 3](/blog/2022/07/24/linux-kernel-patches-new-feature-in-arp-and-ndisc-neighbor-discovery-part-3-of-3.html).
 
 **ipv4 vs ipv6 analogies**:
 

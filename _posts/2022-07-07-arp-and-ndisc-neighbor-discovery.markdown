@@ -27,7 +27,7 @@ The neighbor discovery process for both ipv4 and ipv6 maps layer 3 (network-laye
 | ipv4      | ARP  (address resolution protocol) |garp (gratuious arp)                   | arp_accept |
 | ipv6      | NDISC / ND (neighbor discovery)    |unsolicited na (neighbor advertisement)| drop_unsolicited_na & accept_untracked_na|
 
-This post got too long so I'm splitting it into 3 parts. This post discusses ipv4 ARP. The next posts will discuss ipv6 NDISC and the Linux kernel selftests. Here are links to [part 2](/blog/2022/07/24/linux-kernel-patches-new-feature-in-arp-and-ndisc-neighbor-discovery-part-2-of-3.html) and [part 3](/blog/2022/07/24/linux-kernel-patches-new-feature-in-arp-and-ndisc-neighbor-discovery-part-3-of-3.html).
+This post got too long so I'm splitting it into 3 parts. This post discusses ipv4 ARP and a new feature introduced in [patch](https://lore.kernel.org/netdev/93cfe14597ec1205f61366b9902876287465f1cd.1657755189.git.jhpark1013@gmail.com/). The next posts will discuss ipv6 NDISC and the Linux kernel selftests. Here are links to [part 2](/blog/2022/07/24/linux-kernel-patches-new-feature-in-arp-and-ndisc-neighbor-discovery-part-2-of-3.html) and [part 3](/blog/2022/07/24/linux-kernel-patches-new-feature-in-arp-and-ndisc-neighbor-discovery-part-3-of-3.html).
 
 ## ipv4: ARP
 The ARP protocol is used to map IP network addresses to the hardware addresses (MAC addresses) used by a data link protocol. I explain a bit more about ARP [here](https://jhpark1013.github.io/blog/2022/06/24/days-10-to-18-arp-neighbor-discovery.html).
@@ -68,9 +68,69 @@ More specifically, if the garp source IP is in the same subnet as an address con
 ### 1.2. New arp_accept knob
 The subnet filtering option has been added as the third "knob" to the `arp_accept` sysctl.
 
-`arp_accept` is a sysctl but also a funcion in `arp_process()` that takes the garp source IP address as input and compares it with an IP address on the interface that received the garp message. If the source IP matches an address on the interface, `arp_accept` [here](https://elixir.bootlin.com/linux/latest/source/net/ipv4/arp.c#L875) would be set to 1.
+`arp_accept` is a sysctl but also a funcion in `arp_process()`. Previously, the code directly called `IN_DEV_ARP_ACCEPT` which has now been replaced by the `arp_accept()` function in my patch to include more than just 2 features. Because the 3rd knob has been added, there needed to be a switch statement to output 0 or 1 based on the conditions.
 
-If `arp_accept` is set to 1, `__neigh_lookup()` is called in this [if condition](https://elixir.bootlin.com/linux/latest/source/net/ipv4/arp.c#L888). And when `__neigh_lookup()` is called with its last input `int creat` set to 1, it will create a neigh entry in the ARP table if it doesn't already exist.
+```c
+static int arp_accept(struct in_device *in_dev, __be32 sip)
+{
+	struct net *net = dev_net(in_dev->dev);
+	int scope = RT_SCOPE_LINK;
+
+	switch (IN_DEV_ARP_ACCEPT(in_dev)) {
+	case 0: /* Don't create new entries from garp */
+		return 0;
+	case 1: /* Create new entries from garp */
+		return 1;
+	case 2: /* Create a neighbor in the arp table only if
+		 * sip is in the same subnet as an address
+		 * configured on the interface that received
+                 * the garp message
+		 */
+		return !!inet_confirm_addr(net, in_dev, sip, 0, scope);
+	default:
+		return 0;
+	}
+}
+```
+For the new case '2', it would take the garp source IP address as input and compare it with an IP address on the interface that received the garp message. If the source IP matches an address on the interface, the `if (arp_accept(in_dev, sip))` in `arp_process()` would be set to 1 which would create a neighbor.
+
+And Stefano pointed out that this would work even when there are multiple addresses configured on the interface because `confirm_addr_indev()`, called by `inet_confirm_addr()` (which I use in `arp_accept()`), matches any subnet configured for the given interface -- see the `for_ifa()` loop. Here's a [link](https://elixir.bootlin.com/linux/latest/C/ident/confirm_addr_indev) to confirm_addr_indev().
+
+
+```c
+if (arp_accept(in_dev, sip)) {
+        /* Unsolicited ARP is not accepted by default.
+           It is possible, that this option should be enabled
+           for some devices (strip is candidate)
+         */
+        if (!n &&
+            (is_garp ||
+             (arp->ar_op == htons(ARPOP_REPLY) &&
+              (addr_type == RTN_UNICAST ||
+               (addr_type < 0 &&
+                /* postpone calculation as late as possible */
+                inet_addr_type_dev_table(net, dev, sip) ==
+                        RTN_UNICAST)))))
+                n = __neigh_lookup(&arp_tbl, &sip, dev, 1);
+}
+```
+
+If `arp_accept(in_dev, sip)` is 1, `__neigh_lookup()` is called. When `__neigh_lookup()` is called with its last input `int creat` set to 1, it will create a neigh entry in the ARP table if it doesn't already exist. (Defined [here](https://elixir.bootlin.com/linux/latest/C/ident/__neigh_lookup)).
+
+```c
+static inline struct neighbour *
+__neigh_lookup(struct neigh_table *tbl, const void *pkey,
+               struct net_device *dev, int creat)
+{
+	struct neighbour *n = neigh_lookup(tbl, pkey, dev);
+
+	if (n || !creat)
+		return n;
+
+	n = neigh_create(tbl, pkey, dev);
+	return IS_ERR(n) ? NULL : n;
+}
+```
 
 In [part 2](/blog/2022/07/24/linux-kernel-patches-new-feature-in-arp-and-ndisc-neighbor-discovery-part-2-of-3.html), I'll talk about how subnet filtering is defined in NDISC!
 
