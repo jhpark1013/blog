@@ -3,7 +3,7 @@ title: perf - how I debugged my Linux kernel patch!
 date: 2022-07-26T01:09:47-04:00
 ---
 
-I recently submitted this [patch](https://lore.kernel.org/netdev/93cfe14597ec1205f61366b9902876287465f1cd.1657755189.git.jhpark1013@gmail.com/) to net-next. During the development process, I used perf to debug some unexpected behaviors in the kernel caused by my code!
+I recently submitted this [patch](https://lore.kernel.org/netdev/93cfe14597ec1205f61366b9902876287465f1cd.1657755189.git.jhpark1013@gmail.com/) to net-next (I wrote a [blog](/blog/2022/07/07/arp-and-ndisc-neighbor-discovery.html) post about it, too). During the development process, I used perf to debug some unexpected behaviors in the kernel caused by my code!
 
 When I test with the kernel that does not have the `arp_accept` patch applied, the `arp_accept=2` test does not pass (as expected since knob '2' doesn't exist yet).
 
@@ -70,4 +70,4 @@ in `/usr/lib/linux-tools`
 sudo cp -r 5.15.0-40-generic 5.18.0-rc4+
 ```
 
-So now perf works -- and in testing the kernel (with the new patch applied) with perf, I found an error in my selftest! I didn't add the subnet mask `/24` when setting `ip addr`. So the test for `arp_accept=2` was failing; it wasn't adding entries to my table even for the same subnets (but on perf I saw `neigh_update` being called). So I knew it was a problem with my selftest. After adding the subnet mask, the tests ran well. And asn an added precaution, I added another if-else statement in the `arp_accept=2` selftest to cover both cases (non-subnet and in subnet).
+So now perf works -- and in testing the kernel (with the new patch applied) with perf, I found an error in my selftest! I didn't add the subnet mask `/24` when setting `ip addr`. So the test for `arp_accept=2` was failing; it wasn't adding entries to my table even for the same subnets (but on perf I saw `neigh_update` being called). So I knew it was a problem with my selftest. After adding the subnet mask, the tests ran well. And as an added precaution, I added another if-else statement in the `arp_accept=2` selftest to cover both cases (non-subnet and in subnet).
