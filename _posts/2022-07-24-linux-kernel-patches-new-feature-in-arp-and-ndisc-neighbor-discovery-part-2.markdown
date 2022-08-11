@@ -1,11 +1,14 @@
 ---
-title: Linux kernel patches - new feature in ARP & NDISC neighbor discovery - part 2 (of 3)
+title: Linux kernel patches - new feature in ARP & NDISC neighbor discovery - part 2 (of 2)
 date: 2022-07-24T16:45:17-04:00
+image: https://jhpark1013.github.io/blog/assets/twitter_cards/ndisc_code.png
+description: In this blog post, I talked about adding the subnet filtering feature in ARP in the Linux kernel networking stack.
 ---
 
-In the previous blog (part 1), I talked about the new knob in `arp_accept` that creates neighbors from garp only if the source ip is in the same subnet as an address configured on the interface receiving the garp message. In this blog, I will explain the new subnet-filtering feature we introduced in NDISC in [this patch](https://lore.kernel.org/netdev/56d57be31141c12e9034cfa7570f2012528ca884.1657755189.git.jhpark1013@gmail.com/). And in the next blog (part 3), I will go through the Linux kernel selftest that was used to test the new features.
+In the previous blog ([part 1](/blog/2022/07/07/linux-kernel-patches-new-feature-in-arp-and-ndisc-neighbor-discovery-part-1.html)), I talked about the new knob in `arp_accept` that creates neighbors from garp only if the source ip is in the same subnet as an address configured on the interface receiving the garp message. In this blog, I will explain the new subnet-filtering feature we introduced in NDISC in [this patch](https://lore.kernel.org/netdev/56d57be31141c12e9034cfa7570f2012528ca884.1657755189.git.jhpark1013@gmail.com/).
+<!-- And in the next blog (part 3), I will go through the Linux kernel selftest that was used to test the new features. -->
 
-Here are links to [part 1](/blog/2022/07/07/arp-and-ndisc-neighbor-discovery.html) and [part 3](/blog/2022/07/24/linux-kernel-patches-new-feature-in-arp-and-ndisc-neighbor-discovery-part-3-of-3.html).
+<!-- and [part 3](/blog/2022/07/24/linux-kernel-patches-new-feature-in-arp-and-ndisc-neighbor-discovery-part-3-of-3.html). -->
 
 **ipv4 vs ipv6 analogies**:
 
@@ -124,7 +127,18 @@ RFC 9131, is in this scenario:
 So it's beneficial to have a usable cache entry for the host address by the time the router receives the first packet for that address. So `accept_untracked_na` will create that usable cache entry in STALE
 state.
 
-In [part 3](/blog/2022/07/24/linux-kernel-patches-new-feature-in-arp-and-ndisc-neighbor-discovery-part-3-of-3.html), I'll go through the Linux kernel selftest that was used to test these new features!
+<!-- In [part 3](/blog/2022/07/24/linux-kernel-patches-new-feature-in-arp-and-ndisc-neighbor-discovery-part-3-of-3.html), I'll go through the Linux kernel selftest that was used to test these new features! -->
+
+## Thoughts
+<!-- ipv6 is different from ipv4. So the subnet filtering feature in NDISC is a bit different from that of ARP in that it's added to the `accept_untracked_na` sysctl (untracked vs unsolicited).  -->
+Because ipv6's protocol differed slightly from that of ipv4, I needed help translating the same feature between the two protocols. We (mentors and I) discussed various ideas and improved on 2 to 3 iterations of the patch. Roopa helped me decide which sysctl to add the new feature to, and Stefano helped me create better selftests and think of edge cases of where the patch might fail, among many other helpful feedback.
+
+Another valuable feedback that I will remember in future patches is to not feel rushed in creating revisions. The careful rationale and detailed feedback were immensely helpful! Working with my mentors gave me confidence in fielding questions that may have come from the Linux kernel community upon submitting the patch upstream.
+
+In addition to the patchset, I also received a lot of help in using a new Linux kernel networking library for creating selftests.
+
+Working with my Outreachy mentors on getting this subnet filtering feature (in ARP and NDISC) in the Linux kernel networking stack was an amazing experience! The connections made in the open-source community and with the mentors are incredibly valuable -- thank you all!
+
 
 ## References
 - [ipv6 neighbor discovery](https://blogs.infoblox.com/ipv6-coe/ipv6-neighbor-discovery-cache-part-1-of-2/)

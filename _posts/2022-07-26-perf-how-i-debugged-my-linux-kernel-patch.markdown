@@ -3,7 +3,7 @@ title: perf - how I debugged my Linux kernel patch!
 date: 2022-07-26T01:09:47-04:00
 ---
 
-I recently submitted this [patch](https://lore.kernel.org/netdev/93cfe14597ec1205f61366b9902876287465f1cd.1657755189.git.jhpark1013@gmail.com/) to net-next (I wrote a [blog](/blog/2022/07/07/arp-and-ndisc-neighbor-discovery.html) post about it, too). During the development process, I used perf to debug some unexpected behaviors in the kernel caused by my code!
+I recently submitted this [patch](https://lore.kernel.org/netdev/93cfe14597ec1205f61366b9902876287465f1cd.1657755189.git.jhpark1013@gmail.com/) to net-next (I wrote a [blog](/blog/2022/07/07/linux-kernel-patches-new-feature-in-arp-and-ndisc-neighbor-discovery-part-1.html) post about it, too). During the development process, I used perf to debug some unexpected behaviors in the kernel caused by my code!
 
 First, let's check the behavior of the code before applying the patch.
 

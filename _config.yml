@@ -32,6 +32,7 @@ url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: jaeheejp
 github_username:  jhpark1013
 mathjax:            true  # enables support for mathjax - set to 'false' to disable
+social_share_previews: true
 
 # Build settings
 markdown: kramdown
@@ -40,6 +41,7 @@ plugins:
   - jekyll-feed
   - jekyll-remote-theme
   - jekyll-sitemap
+  - jekyll-seo-tag
 
 remote_theme: heiswayi/the-plain
 

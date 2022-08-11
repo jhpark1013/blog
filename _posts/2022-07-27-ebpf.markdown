@@ -1,0 +1,104 @@
+---
+title: XDP & eBPF for fast filtering, DDoS prevention, and more!
+date: 2022-07-27T15:13:23-04:00
+---
+
+There's a ton of applications for XDP and eBPF. For example, an XDP program can filter packets more quickly than iptables can. (So it can be used effectively for DDoS prevention). Another application is for quantifying operations (like memset and memcpy) in the kernel. There are so many exciting use cases and I wanted to try it out!
+
+And I wrote my first XDP program by going through Jesper's [xdp-tutorial](https://github.com/xdp-project/xdp-tutorial).
+
+In the "basics" portion of the tutorial I learned how to create an XDP program that drop and abort packets, as well as count the packets all in kernelspace.
+
+First, I create a veth-basic02 namespace.
+```
+sudo ../testenv/testenv.sh setup --name veth-basic02
+```
+Here's my addresses (veth-basic02). Note, there is an xdp program running on this interface so it says `xdp/id:88`.
+
+```
+4: veth-basic02@if2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 xdp/id:88 qdisc noqueue state UP group default qlen 1000
+    link/ether 6e:04:13:61:2d:bd brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet6 fc00:dead:cafe:1::1/64 scope global
+       valid_lft forever preferred_lft forever
+    inet6 fe80::6c04:13ff:fe61:2dbd/64 scope link
+       valid_lft forever preferred_lft forever
+
+```
+
+Create an XDP program that drop and abort packets (XDP_DROP, XDP_ABORT).
+
+Then, load xdp_abort:
+```
+sudo ./xdp_loader --dev veth-basic02 --force --progsec xdp_abort
+```
+
+Create a loader function that loads the XDP program on an interface. It attaches the file descriptor to the XDP hook (loads the object file into the kernel).
+
+Ping from inside the namespace, and observe with perf to see packets getting aborted.
+
+Start perf from veth interface:
+```
+sudo ip netns exec veth-basic02 sudo perf record -a -e xdp:xdp_exception sleep 4
+```
+
+Ping from namespace:
+```
+$sudo ip netns exec veth-basic02 ping fc00:dead:cafe:1::1
+
+PING fc00:dead:cafe:1::1(fc00:dead:cafe:1::1) 56 data bytes
+64 bytes from fc00:dead:cafe:1::1: icmp_seq=1 ttl=64 time=0.070 ms
+64 bytes from fc00:dead:cafe:1::1: icmp_seq=2 ttl=64 time=0.089 ms
+...
+
+```
+Observe with perf..
+
+perf probe:
+```
+sudo perf record -a -e xdp:xdp_exception sleep 4
+```
+
+perf output:
+```
+ping 48963 [002] 56562.042165: xdp:xdp_exception: prog_id=88 action=ABORTED ifi>
+ping 48963 [002] 56563.072348: xdp:xdp_exception: prog_id=88 action=ABORTED ifi>
+ping 48963 [002] 56564.096260: xdp:xdp_exception: prog_id=88 action=ABORTED ifi>
+```
+`xdp_exception` is shown!
+
+Create an XDP program that reads the contents of the BPF map through userspace. So this program will read the map value and produce statistics.
+
+Ping from namespace:
+```
+$sudo ip netns exec veth-basic02 ping fc00:dead:cafe:1::1
+
+PING fc00:dead:cafe:1::1(fc00:dead:cafe:1::1) 56 data bytes
+64 bytes from fc00:dead:cafe:1::1: icmp_seq=1 ttl=64 time=0.070 ms
+64 bytes from fc00:dead:cafe:1::1: icmp_seq=2 ttl=64 time=0.089 ms
+...
+
+```
+
+Observe counter:
+
+(The XDP program is using bpf map type, `BPF_MAP_TYPE_PERCPU_ARRAY`, which is per cpu. So in userspace, we add up packet counts for each CPU).
+```
+$ sudo ./xdp_load_and_stats --dev veth-basic02 --force --progsec xdp_stats1
+Success: Loaded BPF-object(xdp_prog_kern.o) and used section(xdp_stats1)
+ - XDP prog attached on device:veth-basic02(ifindex:4)
+
+Collecting stats from BPF map
+ - BPF map (bpf_map_type:6) id:30 name:xdp_stats_map key_size:4 value_size:16 max_entries:5
+
+XDP-action  
+XDP_PASS               0 pkts (         0 pps) period:0.250410
+XDP_PASS               0 pkts (         0 pps) period:2.000379
+XDP_PASS               0 pkts (         0 pps) period:2.000506
+XDP_PASS               2 pkts (         1 pps) period:2.000506
+XDP_PASS               4 pkts (         1 pps) period:2.000521
+XDP_PASS               6 pkts (         1 pps) period:2.000502
+XDP_PASS               8 pkts (         1 pps) period:2.000238
+                       ^ pkt count is increasing!!
+```
+
+This is just the basics but it's already so useful :D I'll update my progress using XDP programs -- specifically, benchmarking memset opperations in the kernel -- next!

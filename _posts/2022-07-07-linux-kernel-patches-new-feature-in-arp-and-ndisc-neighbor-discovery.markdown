@@ -1,7 +1,10 @@
 ---
-title: Linux kernel patches - new feature in ARP & NDISC neighbor discovery - part 1 (of 3)
+title: Linux kernel patches - new feature in ARP & NDISC neighbor discovery - part 1 (of 2)
 date: 2022-07-07T11:45:46-04:00
+image: https://jhpark1013.github.io/blog/assets/twitter_cards/arp_code.png
+description: In this blog post, I talked about adding the subnet filtering feature in ARP in the Linux kernel networking stack.
 ---
+<!-- /assets/twitter_cards/arp_code.png -->
 
 I recently submitted a [patchset](https://lore.kernel.org/netdev/cover.1657755188.git.jhpark1013@gmail.com/) that adds a feature to the ARP (address resolution protocol) and NDISC (neighbor discovery) process. I've learned a bunch of new things which I'll try to document here.
 
@@ -25,10 +28,12 @@ The neighbor discovery process for both ipv4 and ipv6 maps layer 3 (network-laye
 | ipv4      | ARP  (address resolution protocol) |garp (gratuious arp)                   | arp_accept |
 | ipv6      | NDISC / ND (neighbor discovery)    |unsolicited na (neighbor advertisement)| drop_unsolicited_na & accept_untracked_na|
 
-This post got too long so I'm splitting it into 3 parts. This post discusses ipv4 ARP and a new feature introduced in [patch](https://lore.kernel.org/netdev/93cfe14597ec1205f61366b9902876287465f1cd.1657755189.git.jhpark1013@gmail.com/). The next posts will discuss ipv6 NDISC and the Linux kernel selftests. Here are links to [part 2](/blog/2022/07/24/linux-kernel-patches-new-feature-in-arp-and-ndisc-neighbor-discovery-part-2-of-3.html) and [part 3](/blog/2022/07/24/linux-kernel-patches-new-feature-in-arp-and-ndisc-neighbor-discovery-part-3-of-3.html).
+This post got too long so I'm splitting it into two parts. This post discusses ipv4 ARP and a new feature introduced in [patch](https://lore.kernel.org/netdev/93cfe14597ec1205f61366b9902876287465f1cd.1657755189.git.jhpark1013@gmail.com/). In the next post, I will discuss ipv6 NDISC. Here is the link to [part 2](/blog/2022/07/24/linux-kernel-patches-new-feature-in-arp-and-ndisc-neighbor-discovery-part-2.html).
+
+<!-- and [part 3](/blog/2022/07/24/linux-kernel-patches-new-feature-in-arp-and-ndisc-neighbor-discovery-part-3-of-3.html). -->
 
 ## ipv4: ARP
-The ARP protocol is used to map IP network addresses to the hardware addresses (MAC addresses) used by a data link protocol. I explain a bit more about ARP [here](https://jhpark1013.github.io/blog/2022/06/24/days-10-to-18-arp-neighbor-discovery.html).
+The ARP protocol is used to map IP network addresses to the hardware addresses (MAC addresses) used by a data link protocol. I explain a bit more about ARP [here](/blog/2022/06/24/days-10-to-18-arp-neighbor-discovery.html).
 
 ARP is a [request-response](https://en.wikipedia.org/wiki/Request%E2%80%93response) protocol. Here’s what a request-for-MAC-address exchange looks like, in Wireshark:
 ![network](/blog/assets/network_diagrams/wireshark_arp.png)
@@ -130,7 +135,7 @@ __neigh_lookup(struct neigh_table *tbl, const void *pkey,
 }
 ```
 
-In [part 2](/blog/2022/07/24/linux-kernel-patches-new-feature-in-arp-and-ndisc-neighbor-discovery-part-2-of-3.html), I'll talk about how subnet filtering is defined in NDISC!
+In this blog post, I talked about adding the subnet filtering feature in ARP in the Linux kernel networking stack. In [part 2](/blog/2022/07/24/linux-kernel-patches-new-feature-in-arp-and-ndisc-neighbor-discovery-part-2.html), I'll describe how subnet filtering is defined in NDISC!
 
 
 ## References
