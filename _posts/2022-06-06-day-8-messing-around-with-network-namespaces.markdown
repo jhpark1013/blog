@@ -1,5 +1,5 @@
 ---
-title: Day 8 - messing around with network namespaces
+title: Messing around with network namespaces
 date: 2022-06-06T17:25:27-04:00
 ---
 

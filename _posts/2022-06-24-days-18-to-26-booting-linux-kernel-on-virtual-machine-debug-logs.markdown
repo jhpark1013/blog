@@ -1,5 +1,5 @@
 ---
-title: Days 18 to 26 - booting custom Linux kernel on virtual machine (debug logs)
+title: Booting custom Linux kernel on virtual machine (debug logs)
 date: 2022-06-24T14:42:14-04:00
 ---
 

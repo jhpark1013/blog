@@ -1,5 +1,5 @@
 ---
-title: Day 4 - thinking of the internship project tasks
+title: Thinking of the internship project tasks
 date: 2022-06-02T10:23:07-04:00
 ---
 

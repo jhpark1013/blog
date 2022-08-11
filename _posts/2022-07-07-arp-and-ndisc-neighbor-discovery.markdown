@@ -3,9 +3,7 @@ title: Linux kernel patches - new feature in ARP & NDISC neighbor discovery - pa
 date: 2022-07-07T11:45:46-04:00
 ---
 
-We're already at the half way point of the Linux kernel internship! I've been meaning to log daily. Although, this plan has derailed quite a bit, I'll try to fill you in on what I've been up to!
-
-I submitted a [patchset](https://lore.kernel.org/netdev/cover.1657755188.git.jhpark1013@gmail.com/) that adds a feature to the ARP (address resolution protocol) and NDISC (neighbor discovery) process. I've learned a bunch of new things which I'll try to document here.
+I recently submitted a [patchset](https://lore.kernel.org/netdev/cover.1657755188.git.jhpark1013@gmail.com/) that adds a feature to the ARP (address resolution protocol) and NDISC (neighbor discovery) process. I've learned a bunch of new things which I'll try to document here.
 
 Before jumping into the details, I want to thank my Outreachy mentors: Roopa Prabhu, Stefano Brivio, and Andy Roulin. They've helped me understand the neighbor discovery process in the Linux kernel networking stack and provided invaluable support & feedback in creating these patches!
 
